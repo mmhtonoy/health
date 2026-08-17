@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>NEOBODY — Real Sensor</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+    --bg:#04061a;
+    --panel:#090e2c;
+    --panel2:#0d1440;
+    --blueberry:#5865ff;
+    --cyan:#00d9ff;
+    --purple:#8c5cff;
+    --pink:#ff4d9d;
+    --green:#20e6a0;
+    --orange:#ffad3d;
+    --red:#ff4d68;
+    --text:#f4f6ff;
+    --muted:#7e88b5;
+    --border:rgba(89,111,255,.28);
+}
+
+html,body{
+    min-height:100%;
+    background:var(--bg);
+}
+
+body{
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+    overflow-x:hidden;
+}
+
+/* NEON BACKGROUND */
+
+body:before{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    left:-260px;
+    top:-220px;
+    background:radial-gradient(circle,
+        rgba(76,80,255,.27),
+        transparent 68%);
+    filter:blur(20px);
+    pointer-events:none;
+    z-index:-3;
+}
+
+body:after{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    right:-270px;
+    bottom:-240px;
+    background:radial-gradient(circle,
+        rgba(0,217,255,.15),
+        transparent 68%);
+    filter:blur(25px);
+    pointer-events:none;
+    z-index:-3;
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(78,100,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(78,100,255,.035) 1px,transparent 1px);
+    background-size:35px 35px;
+    mask-image:linear-gradient(to bottom,#000,transparent);
+    pointer-events:none;
+    z-index:-2;
+}
+
+/* APP */
+
+.app{
+    width:100%;
+    max-width:520px;
+    margin:auto;
+    padding:20px 17px 110px;
+}
+
+/* HEADER */
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:27px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo{
+    width:49px;
+    height:49px;
+    display:grid;
+    place-items:center;
+    border-radius:16px;
+    border:1px solid rgba(0,217,255,.45);
+    background:linear-gradient(145deg,#11194b,#070a25);
+    box-shadow:
+        0 0 18px rgba(0,217,255,.22),
+        inset 0 0 18px rgba(74,84,255,.12);
+}
+
+.logo svg{
+    width:29px;
+    fill:none;
+    stroke:var(--cyan);
+    stroke-width:2;
+}
+
+.brand h1{
+    font-size:20px;
+    letter-spacing:2.5px;
+}
+
+.brand span{
+    display:block;
+    margin-top:4px;
+    color:var(--muted);
+    font-size:9px;
+    letter-spacing:1.5px;
+}
+
+.system-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 13px var(--green);
+}
+
+/* GREETING */
+
+.greeting{
+    margin-bottom:20px;
+}
+
+.greeting small{
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:1.6px;
+}
+
+.greeting h2{
+    margin-top:7px;
+    font-size:27px;
+}
+
+/* HEART CARD */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    padding:22px;
+    border-radius:25px;
+    border:1px solid rgba(0,217,255,.32);
+    background:linear-gradient(145deg,
+        rgba(15,23,69,.96),
+        rgba(6,9,31,.98));
+    box-shadow:
+        0 0 30px rgba(57,83,255,.12),
+        inset 0 0 30px rgba(72,87,255,.04);
+    margin-bottom:15px;
+}
+
+.hero:after{
+    content:"";
+    position:absolute;
+    width:190px;
+    height:190px;
+    right:-90px;
+    top:-95px;
+    border-radius:50%;
+    background:radial-gradient(circle,
+        rgba(0,217,255,.16),
+        transparent 70%);
+}
+
+.hero-title{
+    color:#929dc8;
+    font-size:11px;
+    letter-spacing:1.8px;
+    text-transform:uppercase;
+}
+
+.hr-display{
+    display:flex;
+    align-items:baseline;
+    gap:7px;
+    margin-top:5px;
+}
+
+.hr-value{
+    font-size:48px;
+    font-weight:700;
+}
+
+.hr-unit{
+    color:var(--cyan);
+    font-size:15px;
+}
+
+.hr-status{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.pulse{
+    height:55px;
+    margin-top:12px;
+    overflow:hidden;
+}
+
+.pulse svg{
+    width:100%;
+    height:100%;
+}
+
+.pulse-path{
+    fill:none;
+    stroke:var(--cyan);
+    stroke-width:2;
+    filter:drop-shadow(0 0 6px var(--cyan));
+    stroke-dasharray:520;
+    animation:pulseLine 3s linear infinite;
+}
+
+@keyframes pulseLine{
+    from{stroke-dashoffset:520}
+    to{stroke-dashoffset:-520}
+}
+
+.heart-signal{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:4px;
+    font-size:11px;
+    color:var(--muted);
+}
+
+.signal-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#65709b;
+}
+
+.signal-dot.live{
+    background:var(--green);
+    box-shadow:0 0 10px var(--green);
+}
+
+.main-button{
+    width:100%;
+    border:0;
+    border-radius:14px;
+    margin-top:16px;
+    padding:15px;
+    color:#fff;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:1px;
+    background:linear-gradient(90deg,
+        #5147df,
+        #087fe8);
+    box-shadow:0 0 20px rgba(69,94,255,.3);
+}
+
+.main-button:active{
+    transform:scale(.98);
+}
+
+.main-button.stop{
+    background:linear-gradient(90deg,#a82b57,#e34755);
+}
+
+/* METRIC GRID */
+
+.metrics{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+}
+
+.card{
+    min-height:170px;
+    padding:17px;
+    position:relative;
+    overflow:hidden;
+    border-radius:21px;
+    border:1px solid var(--border);
+    background:linear-gradient(145deg,
+        rgba(13,19,57,.96),
+        rgba(6,9,32,.98));
+    box-shadow:
+        0 10px 28px rgba(0,0,0,.16),
+        inset 0 0 25px rgba(60,90,255,.035);
+}
+
+.iconbox{
+    width:47px;
+    height:47px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    margin-bottom:14px;
+}
+
+.iconbox svg{
+    width:27px;
+    height:27px;
+    fill:none;
+    stroke-width:1.8;
+}
+
+.heart-icon{
+    color:var(--pink);
+    background:rgba(255,77,157,.07);
+    border:1px solid rgba(255,77,157,.22);
+}
+
+.heart-icon svg{
+    stroke:var(--pink);
+    filter:drop-shadow(0 0 5px var(--pink));
+}
+
+.temp-icon{
+    color:var(--cyan);
+    background:rgba(0,217,255,.06);
+    border:1px solid rgba(0,217,255,.2);
+}
+
+.temp-icon svg{
+    stroke:var(--cyan);
+}
+
+.steps-icon{
+    color:var(--green);
+    background:rgba(32,230,160,.06);
+    border:1px solid rgba(32,230,160,.2);
+}
+
+.steps-icon svg{
+    stroke:var(--green);
+}
+
+.activity-icon{
+    color:var(--orange);
+    background:rgba(255,173,61,.06);
+    border:1px solid rgba(255,173,61,.2);
+}
+
+.activity-icon svg{
+    stroke:var(--orange);
+}
+
+.card-title{
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+}
+
+.card-value{
+    margin-top:7px;
+    font-size:25px;
+    font-weight:700;
+}
+
+.card-unit{
+    color:#8c96bd;
+    font-size:10px;
+    font-weight:400;
+}
+
+.card-status{
+    margin-top:7px;
+    font-size:10px;
+    color:var(--muted);
+}
+
+.good{
+    color:var(--green);
+}
+
+.warning{
+    color:var(--orange);
+}
+
+.error{
+    color:var(--red);
+}
+
+/* ACTIVITY */
+
+.section{
+    margin-top:23px;
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:11px;
+}
+
+.section-head h3{
+    font-size:15px;
+}
+
+.section-head span{
+    color:var(--cyan);
+    font-size:10px;
+}
+
+.activity{
+    padding:18px;
+    border:1px solid var(--border);
+    border-radius:21px;
+    background:rgba(9,14,43,.88);
+}
+
+.activity-row{
+    display:flex;
+    justify-content:space-between;
+}
+
+.big-number{
+    font-size:30px;
+    font-weight:bold;
+}
+
+.sub{
+    color:var(--muted);
+    font-size:10px;
+    margin-top:3px;
+}
+
+.percent{
+    font-size:19px;
+    font-weight:bold;
+    text-align:right;
+}
+
+.progress{
+    height:7px;
+    margin-top:17px;
+    border-radius:20px;
+    background:#151b43;
+    overflow:hidden;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    border-radius:20px;
+    background:linear-gradient(90deg,
+        var(--purple),
+        var(--cyan));
+    box-shadow:0 0 12px var(--cyan);
+    transition:width .3s;
+}
+
+/* SENSOR NOTE */
+
+.sensor-note{
+    margin-top:13px;
+    padding:13px;
+    border-radius:15px;
+    border:1px solid rgba(126,140,190,.14);
+    background:rgba(7,10,31,.7);
+    color:#737da8;
+    font-size:10px;
+    line-height:1.5;
+}
+
+/* BOTTOM NAV */
+
+.nav{
+    position:fixed;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    width:calc(100% - 28px);
+    max-width:490px;
+    height:67px;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    border-radius:22px;
+    border:1px solid rgba(80,110,255,.3);
+    background:rgba(5,8,28,.91);
+    backdrop-filter:blur(18px);
+    box-shadow:0 0 30px rgba(37,66,255,.17);
+    z-index:50;
+}
+
+.nav button{
+    border:0;
+    background:none;
+    color:#5e6998;
+    font-size:8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+}
+
+.nav svg{
+    width:21px;
+    height:21px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+}
+
+.nav button.active{
+    color:var(--cyan);
+    filter:drop-shadow(0 0 5px var(--cyan));
+}
+
+/* CAMERA OVERLAY */
+
+.camera-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(2,4,17,.95);
+    z-index:100;
+}
+
+.camera-modal.show{
+    display:flex;
+}
+
+.camera-box{
+    width:100%;
+    max-width:400px;
+    padding:20px;
+    border-radius:25px;
+    border:1px solid rgba(0,217,255,.35);
+    background:#080c2b;
+    box-shadow:0 0 35px rgba(0,217,255,.12);
+}
+
+.camera-title{
+    text-align:center;
+    font-size:15px;
+    letter-spacing:1px;
+}
+
+.camera-help{
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.5;
+    margin:10px 0 15px;
+}
+
+.camera-preview{
+    width:100%;
+    height:210px;
+    object-fit:cover;
+    border-radius:18px;
+    background:#000;
+    transform:scaleX(-1);
+}
+
+.ppg{
+    height:40px;
+    margin-top:10px;
+    overflow:hidden;
+}
+
+.ppg canvas{
+    width:100%;
+    height:100%;
+}
+
+.camera-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.camera-buttons button{
+    flex:1;
+    padding:13px;
+    border:0;
+    border-radius:13px;
+    color:#fff;
+    font-weight:bold;
+}
+
+.close-btn{
+    background:#252b51;
+}
+
+.finish-btn{
+    background:linear-gradient(90deg,#4d43d9,#0785e9);
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    top:17px;
+    left:50%;
+    transform:translate(-50%,-100px);
+    z-index:200;
+    padding:12px 17px;
+    border-radius:12px;
+    border:1px solid rgba(0,217,255,.35);
+    background:#0a1033;
+    color:#fff;
+    font-size:11px;
+    box-shadow:0 0 20px rgba(0,217,255,.18);
+    transition:.3s;
+    white-space:nowrap;
+}
+
+.toast.show{
+    transform:translate(-50%,0);
+}
+
+@media(max-width:370px){
+    .app{
+        padding-left:12px;
+        padding-right:12px;
+    }
+
+    .metrics{
+        gap:9px;
+    }
+
+    .card{
+        padding:14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid"></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="app">
+
+<header class="header">
+
+    <div class="brand">
+
+        <div class="logo">
+            <svg viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="11"/>
+                <path d="M9 16h4l2-5 3 10 2-5h4"/>
+            </svg>
+        </div>
+
+        <div>
+            <h1>NEOBODY</h1>
+            <span>REAL SENSOR MONITOR</span>
+        </div>
+
+    </div>
+
+    <div class="system-dot" id="systemDot"></div>
+
+</header>
+
+
+<div class="greeting">
+    <small>LIVE BODY DATA</small>
+    <h2>Hello, Noman</h2>
+</div>
+
+
+<!-- HEART RATE -->
+
+<div class="hero">
+
+    <div class="hero-title">Heart Rate</div>
+
+    <div class="hr-display">
+
+        <div class="hr-value" id="heartRate">--</div>
+
+        <div class="hr-unit">BPM</div>
+
+    </div>
+
+    <div class="hr-status" id="heartStatus">
+        Camera measurement not running
+    </div>
+
+    <div class="pulse">
+
+        <svg viewBox="0 0 500 60"
+             preserveAspectRatio="none">
+
+            <path class="pulse-path"
+            d="M0 30
+            L45 30
+            L60 30
+            L72 12
+            L85 48
+            L98 30
+            L155 30
+            L170 30
+            L184 8
+            L198 51
+            L212 30
+            L270 30
+            L285 30
+            L299 14
+            L314 47
+            L328 30
+            L390 30
+            L405 30
+            L420 10
+            L435 50
+            L450 30
+            L500 30"/>
+
+        </svg>
+
+    </div>
+
+    <div class="heart-signal">
+        <div class="signal-dot" id="heartDot"></div>
+        <span id="heartSignal">Sensor idle</span>
+    </div>
+
+    <button class="main-button"
+            id="heartButton"
+            onclick="openHeartMonitor()">
+        START HEART TEST
+    </button>
+
+</div>
+
+
+<!-- METRICS -->
+
+<div class="metrics">
+
+    <!-- TEMPERATURE -->
+
+    <div class="card">
+
+        <div class="iconbox temp-icon">
+
+            <svg viewBox="0 0 32 32">
+                <path d="M16 6a4 4 0 0 0-4 4v10a6 6 0 1 0 8 0V10a4 4 0 0 0-4-4z"/>
+                <path d="M16 14v9"/>
+                <path d="M21 11h4"/>
+                <path d="M21 15h3"/>
+                <path d="M21 19h4"/>
+            </svg>
+
+        </div>
+
+        <div class="card-title">Body Temp</div>
+
+        <div class="card-value">
+            --
+            <span class="card-unit">°C</span>
+        </div>
+
+        <div class="card-status error">
+            Phone sensor unavailable
+        </div>
+
+    </div>
+
+
+    <!-- STEPS -->
+
+    <div class="card">
+
+        <div class="iconbox steps-icon">
+
+            <svg viewBox="0 0 32 32">
+                <path d="M12 5c3 0 5 3 5 7 0 5-2 9-5 11-3 2-6 0-6-3 0-4 2-8 3-11 1-3 1-4 3-4z"/>
+                <path d="M21 9c3 0 5 3 5 7 0 5-2 9-5 11-3 2-6 0-6-3 0-4 2-8 3-11 1-3 1-4 3-4z"/>
+            </svg>
+
+        </div>
+
+        <div class="card-title">Steps</div>
+
+        <div class="card-value" id="steps">0</div>
+
+        <div class="card-status good"
+             id="stepStatus">
+            Motion sensor
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVITY -->
+
+    <div class="card">
+
+        <div class="iconbox activity-icon">
+
+            <svg viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="11"/>
+                <path d="M16 5v5"/>
+                <path d="M16 22v5"/>
+                <path d="M5 16h5"/>
+                <path d="M22 16h5"/>
+                <circle cx="16" cy="16" r="3"/>
+            </svg>
+
+        </div>
+
+        <div class="card-title">Activity</div>
+
+        <div class="card-value"
+             id="activity">
+            Idle
+        </div>
+
+        <div class="card-status"
+             id="activityStatus">
+            Waiting for movement
+        </div>
+
+    </div>
+
+
+    <!-- SENSOR -->
+
+    <div class="card">
+
+        <div class="iconbox heart-icon">
+
+            <svg viewBox="0 0 32 32">
+                <path d="M16 27S5 20 5 12c0-4 3-7 7-7 2 0 4 1 4 3 0-2 2-3 4-3 4 0 7 3 7 7 0 8-11 15-11 15z"/>
+            </svg>
+
+        </div>
+
+        <div class="card-title">System</div>
+
+        <div class="card-value"
+             id="sensorState"
+             style="font-size:19px;">
+            READY
+        </div>
+
+        <div class="card-status"
+             id="sensorStatus">
+            Sensors initializing
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DAILY STEPS -->
+
+<div class="section">
+
+    <div class="section-head">
+
+        <h3>Daily Activity</h3>
+
+        <span>GOAL 10,000</span>
+
+    </div>
+
+    <div class="activity">
+
+        <div class="activity-row">
+
+            <div>
+                <div class="big-number"
+                     id="dailySteps">
+                    0
+                </div>
+
+                <div class="sub">
+                    verified movement steps
+                </div>
+            </div>
+
+            <div>
+                <div class="percent"
+                     id="percent">
+                    0%
+                </div>
+
+                <div class="sub">
+                    progress
+                </div>
+            </div>
+
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar"
+                 id="progressBar">
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="sensor-note">
+    Heart rate uses camera-based optical pulse detection.
+    Step counting uses the phone motion sensor.
+    Body temperature requires an external temperature sensor;
+    this app will not display a fake temperature value.
+</div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="nav">
+
+    <button class="active"
+            onclick="navSelect(this)">
+
+        <svg viewBox="0 0 32 32">
+            <path d="M5 14l11-9 11 9v13H19v-8h-6v8H5z"/>
+        </svg>
+
+        HOME
+
+    </button>
+
+    <button onclick="navSelect(this)">
+
+        <svg viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="11"/>
+            <path d="M16 10v7l5 3"/>
+        </svg>
+
+        HISTORY
+
+    </button>
+
+    <button onclick="navSelect(this)">
+
+        <svg viewBox="0 0 32 32">
+            <path d="M3 16h6l3-8 5 16 3-8h9"/>
+        </svg>
+
+        MONITOR
+
+    </button>
+
+    <button onclick="navSelect(this)">
+
+        <svg viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="4"/>
+            <path d="M16 4v5M16 23v5M4 16h5M23 16h5"/>
+            <path d="M8 8l4 4M20 20l4 4M24 8l-4 4M12 20l-4 4"/>
+        </svg>
+
+        SETTINGS
+
+    </button>
+
+</nav>
+
+
+<!-- HEART CAMERA MODAL -->
+
+<div class="camera-modal"
+     id="cameraModal">
+
+    <div class="camera-box">
+
+        <div class="camera-title">
+            HEART RATE SENSOR
+        </div>
+
+        <div class="camera-help">
+            Place your fingertip completely over the rear camera
+            and flashlight. Keep your finger still while measuring.
+        </div>
+
+        <video id="camera"
+               class="camera-preview"
+               autoplay
+               playsinline>
+        </video>
+
+        <canvas id="ppgCanvas"
+                style="display:none;">
+        </canvas>
+
+        <div class="ppg">
+            <canvas id="ppgGraph"></canvas>
+        </div>
+
+        <div style="text-align:center;
+                    margin-top:10px;
+                    font-size:12px;
+                    color:var(--cyan);"
+             id="cameraReading">
+            Waiting for signal...
+        </div>
+
+        <div class="camera-buttons">
+
+            <button class="close-btn"
+                    onclick="closeHeartMonitor()">
+                CANCEL
+            </button>
+
+            <button class="finish-btn"
+                    onclick="finishHeartMeasurement()">
+                FINISH
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
+
+let steps = 0;
+
+let lastStepTime = 0;
+
+let accelHistory = [];
+
+let walkingSamples = [];
+
+let motionStarted = false;
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function toast(message){
+
+    const t = document.getElementById("toast");
+
+    t.textContent = message;
+
+    t.classList.add("show");
+
+    setTimeout(()=>{
+        t.classList.remove("show");
+    },2300);
+}
+
+
+/* =========================================================
+   STEP DETECTION
+   Uses:
+   - acceleration magnitude
+   - gravity baseline
+   - smoothing
+   - peak detection
+   - minimum step interval
+   - walking rhythm
+========================================================= */
+
+function handleMotion(event){
+
+    const a = event.accelerationIncludingGravity;
+
+    if(!a) return;
+
+    const x = Number(a.x) || 0;
+    const y = Number(a.y) || 0;
+    const z = Number(a.z) || 0;
+
+    const magnitude =
+        Math.sqrt(x*x + y*y + z*z);
+
+    const now = performance.now();
+
+    accelHistory.push({
+        t:now,
+        v:magnitude
+    });
+
+    /* Keep only recent data */
+
+    while(
+        accelHistory.length &&
+        now - accelHistory[0].t > 1200
+    ){
+        accelHistory.shift();
+    }
+
+    if(accelHistory.length < 8)
+        return;
+
+    /* Calculate rolling average */
+
+    let sum = 0;
+
+    for(const item of accelHistory)
+        sum += item.v;
+
+    const average =
+        sum / accelHistory.length;
+
+    /* Dynamic signal */
+
+    const signal =
+        magnitude - average;
+
+    walkingSamples.push({
+        t:now,
+        v:signal
+    });
+
+    while(
+        walkingSamples.length &&
+        now - walkingSamples[0].t > 1000
+    ){
+        walkingSamples.shift();
+    }
+
+    if(walkingSamples.length < 5)
+        return;
+
+    /*
+       Need a reasonably strong peak.
+       Normal small phone movement should usually
+       stay below this.
+    */
+
+    const threshold = 1.8;
+
+    if(signal < threshold)
+        return;
+
+    /*
+       Check local peak.
+    */
+
+    const len = walkingSamples.length;
+
+    const current =
+        walkingSamples[len-1].v;
+
+    const previous =
+        walkingSamples[len-2].v;
+
+    if(current < previous)
+        return;
+
+    /*
+       Minimum realistic human step interval.
+       Prevents rapid shaking from counting many steps.
+    */
+
+    if(now - lastStepTime < 380)
+        return;
+
+    /*
+       Walking rhythm check.
+       A single random movement should not immediately
+       produce repeated steps.
+    */
+
+    const recentPeaks =
+        walkingSamples.filter(
+            s => s.v > threshold
+        );
+
+    if(recentPeaks.length < 2)
+        return;
+
+    /*
+       Count verified step.
+    */
+
+    steps++;
+
+    lastStepTime = now;
+
+    updateStepUI();
+
+    document.getElementById("activity")
+        .textContent = "Walking";
+
+    document.getElementById("activityStatus")
+        .textContent = "Walking detected";
+
+}
+
+
+/* =========================================================
+   STEP UI
+========================================================= */
+
+function updateStepUI(){
+
+    document.getElementById("steps")
+        .textContent =
+        steps.toLocaleString();
+
+    document.getElementById("dailySteps")
+        .textContent =
+        steps.toLocaleString();
+
+    const percent =
+        Math.min(
+            100,
+            Math.round(
+                steps / 10000 * 100
+            )
+        );
+
+    document.getElementById("percent")
+        .textContent =
+        percent + "%";
+
+    document.getElementById("progressBar")
+        .style.width =
+        percent + "%";
+}
+
+
+/* =========================================================
+   MOTION SENSOR PERMISSION
+========================================================= */
+
+async function enableMotion(){
+
+    try{
+
+        if(
+            typeof DeviceMotionEvent !==
+            "undefined" &&
+            typeof DeviceMotionEvent.requestPermission ===
+            "function"
+        ){
+
+            const result =
+                await DeviceMotionEvent.requestPermission();
+
+            if(result !== "granted"){
+
+                document.getElementById("stepStatus")
+                    .textContent =
+                    "Permission denied";
+
+                document.getElementById("stepStatus")
+                    .className =
+                    "card-status error";
+
+                return;
+            }
+        }
+
+        window.addEventListener(
+            "devicemotion",
+            handleMotion,
+            {passive:true}
+        );
+
+        motionStarted = true;
+
+        document.getElementById("sensorState")
+            .textContent = "ONLINE";
+
+        document.getElementById("sensorStatus")
+            .textContent = "Motion sensor active";
+
+        toast("Motion sensor connected");
+
+    }catch(error){
+
+        document.getElementById("sensorState")
+            .textContent = "ERROR";
+
+        document.getElementById("sensorStatus")
+            .textContent = "Motion sensor unavailable";
+
+        toast("Motion sensor unavailable");
+    }
+}
+
+
+/* =========================================================
+   HEART RATE — CAMERA PPG
+========================================================= */
+
+let videoStream = null;
+
+let cameraTrack = null;
+
+let ppgTimer = null;
+
+let ppgValues = [];
+
+let ppgTimes = [];
+
+let heartMeasuring = false;
+
+let lastFrameTime = 0;
+
+
+/* =========================================================
+   OPEN CAMERA
+========================================================= */
+
+async function openHeartMonitor(){
+
+    if(heartMeasuring)
+        return;
+
+    try{
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video:{
+                    facingMode:{
+                        ideal:"environment"
+                    },
+                    width:{
+                        ideal:640
+                    },
+                    height:{
+                        ideal:480
+                    }
+                },
+
+                audio:false
+            });
+
+        videoStream = stream;
+
+        cameraTrack =
+            stream.getVideoTracks()[0];
+
+        document.getElementById("camera")
+            .srcObject =
+            stream;
+
+        document.getElementById("cameraModal")
+            .classList.add("show");
+
+        heartMeasuring = true;
+
+        document.getElementById("heartButton")
+            .textContent =
+            "MEASURING...";
+
+        document.getElementById("heartButton")
+            .classList.add("stop");
+
+        document.getElementById("heartStatus")
+            .textContent =
+            "Place finger over rear camera";
+
+        document.getElementById("heartDot")
+            .classList.add("live");
+
+        document.getElementById("heartSignal")
+            .textContent =
+            "Camera sensor active";
+
+        /*
+           Try to enable flashlight.
+           Not every browser/WebView supports torch.
+        */
+
+        try{
+
+            await cameraTrack.applyConstraints({
+                advanced:[
+                    {torch:true}
+                ]
+            });
+
+        }catch(torchError){
+
+            toast(
+                "Camera active; flashlight unavailable"
+            );
+        }
+
+        ppgValues = [];
+        ppgTimes = [];
+
+        setTimeout(startPPGSampling,1000);
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Camera permission required"
+        );
+    }
+}
+
+
+/* =========================================================
+   PPG SAMPLING
+========================================================= */
+
+function startPPGSampling(){
+
+    if(!heartMeasuring)
+        return;
+
+    const video =
+        document.getElementById("camera");
+
+    const canvas =
+        document.getElementById("ppgCanvas");
+
+    const ctx =
+        canvas.getContext("2d",
+            {willReadFrequently:true});
+
+    canvas.width = 160;
+    canvas.height = 120;
+
+    const graph =
+        document.getElementById("ppgGraph");
+
+    const graphCtx =
+        graph.getContext("2d");
+
+    graph.width = 360;
+    graph.height = 40;
+
+    function sample(){
+
+        if(!heartMeasuring)
+            return;
+
+        if(video.readyState < 2){
+
+            requestAnimationFrame(sample);
+            return;
+        }
+
+        const now =
+            performance.now();
+
+        /*
+           Sample approximately 20-30 times/sec.
+        */
+
+        if(
+            lastFrameTime &&
+            now - lastFrameTime < 35
+        ){
+
+            requestAnimationFrame(sample);
+            return;
+        }
+
+        lastFrameTime = now;
+
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        /*
+           Use center region only.
+        */
+
+        const image =
+            ctx.getImageData(
+                35,
+                25,
+                90,
+                70
+            );
+
+        let red = 0;
+        let green = 0;
+        let blue = 0;
+
+        let count = 0;
+
+        for(
+            let i=0;
+            i<image.data.length;
+            i+=4
+        ){
+
+            red += image.data[i];
+            green += image.data[i+1];
+            blue += image.data[i+2];
+
+            count++;
+        }
+
+        red /= count;
+        green /= count;
+        blue /= count;
+
+        /*
+           Red-channel PPG.
+           Finger coverage should create
+           strong optical variation.
+        */
+
+        const signal =
+            red - ((green + blue) / 2);
+
+        ppgValues.push(signal);
+        ppgTimes.push(now);
+
+        /*
+           Keep approximately 15 seconds.
+        */
+
+        while(
+            ppgTimes.length &&
+            now - ppgTimes[0] > 15000
+        ){
+
+            ppgTimes.shift();
+            ppgValues.shift();
+        }
+
+        drawPPG(graphCtx);
+
+        if(ppgValues.length > 100){
+
+            const bpm =
+                calculateHeartRate(
+                    ppgValues,
+                    ppgTimes
+                );
+
+            if(bpm !== null){
+
+                document.getElementById("heartRate")
+                    .textContent =
+                    bpm;
+
+                document.getElementById("cameraReading")
+                    .textContent =
+                    bpm + " BPM";
+
+                document.getElementById("heartStatus")
+                    .textContent =
+                    "Live camera PPG measurement";
+            }else{
+
+                document.getElementById("cameraReading")
+                    .textContent =
+                    "Hold finger steady...";
+            }
+        }
+
+        requestAnimationFrame(sample);
+    }
+
+    requestAnimationFrame(sample);
+}
+
+
+/* =========================================================
+   DRAW PPG
+========================================================= */
+
+function drawPPG(ctx){
+
+    const canvas = ctx.canvas;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    if(ppgValues.length < 5)
+        return;
+
+    const visible =
+        ppgValues.slice(-120);
+
+    let min =
+        Math.min(...visible);
+
+    let max =
+        Math.max(...visible);
+
+    if(max-min < 0.8)
+        return;
+
+    ctx.beginPath();
+
+    for(
+        let i=0;
+        i<visible.length;
+        i++
+    ){
+
+        const x =
+            i /
+            (visible.length-1) *
+            canvas.width;
+
+        const y =
+            canvas.height -
+            (
+                (visible[i]-min) /
+                (max-min)
+            ) *
+            (canvas.height-6) - 3;
+
+        if(i===0)
+            ctx.moveTo(x,y);
+        else
+            ctx.lineTo(x,y);
+    }
+
+    ctx.strokeStyle =
+        "#00d9ff";
+
+    ctx.lineWidth = 1.5;
+
+    ctx.shadowColor =
+        "#00d9ff";
+
+    ctx.shadowBlur = 5;
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+}
+
+
+/* =========================================================
+   HEART RATE CALCULATION
+========================================================= */
+
+function calculateHeartRate(values,times){
+
+    if(values.length < 100)
+        return null;
+
+    /*
+       Remove DC component.
+    */
+
+    let mean = 0;
+
+    for(const v of values)
+        mean += v;
+
+    mean /= values.length;
+
+    const centered =
+        values.map(v=>v-mean);
+
+    /*
+       Smooth signal.
+    */
+
+    const smooth = [];
+
+    const windowSize = 5;
+
+    for(
+        let i=0;
+        i<centered.length;
+        i++
+    ){
+
+        let sum = 0;
+        let count = 0;
+
+        for(
+            let j=
+                Math.max(
+                    0,
+                    i-windowSize
+                );
+
+            j<=Math.min(
+                centered.length-1,
+                i+windowSize
+            );
+
+            j++
+        ){
+
+            sum += centered[j];
+            count++;
+        }
+
+        smooth.push(sum/count);
+    }
+
+    /*
+       Standard deviation.
+    */
+
+    let variance = 0;
+
+    for(const v of smooth){
+
+        variance +=
+            Math.pow(v,2);
+    }
+
+    variance /= smooth.length;
+
+    const std =
+        Math.sqrt(variance);
+
+    /*
+       Very weak optical signal.
+    */
+
+    if(std < 0.7)
+        return null;
+
+    const threshold =
+        std * 0.45;
+
+    /*
+       Find peaks.
+    */
+
+    const peaks = [];
+
+    for(
+        let i=2;
+        i<smooth.length-2;
+        i++
+    ){
+
+        if(
+            smooth[i] >
+            smooth[i-1] &&
+            smooth[i] >=
+            smooth[i+1] &&
+            smooth[i] > threshold
+        ){
+
+            const time =
+                times[i];
+
+            /*
+               Minimum ~0.45 sec between peaks.
+            */
+
+            if(
+                !peaks.length ||
+                time -
+                peaks[peaks.length-1]
+                > 450
+            ){
+
+                peaks.push(time);
+            }
+        }
+    }
+
+    if(peaks.length < 3)
+        return null;
+
+    /*
+       Calculate intervals.
+    */
+
+    const intervals = [];
+
+    for(
+        let i=1;
+        i<peaks.length;
+        i++
+    ){
+
+        const interval =
+            peaks[i] -
+            peaks[i-1];
+
+        /*
+           40–180 BPM range.
+        */
+
+        if(
+            interval >= 333 &&
+            interval <= 1500
+        ){
+
+            intervals.push(interval);
+        }
+    }
+
+    if(intervals.length < 2)
+        return null;
+
+    /*
+       Median interval.
+    */
+
+    intervals.sort((a,b)=>a-b);
+
+    const middle =
+        Math.floor(
+            intervals.length/2
+        );
+
+    let median;
+
+    if(intervals.length%2)
+        median =
+            intervals[middle];
+    else
+        median =
+            (
+                intervals[middle-1] +
+                intervals[middle]
+            ) / 2;
+
+    const bpm =
+        60000 / median;
+
+    /*
+       Reject implausible results.
+    */
+
+    if(bpm < 40 || bpm > 180)
+        return null;
+
+    return Math.round(bpm);
+}
+
+
+/* =========================================================
+   FINISH HEART MEASUREMENT
+========================================================= */
+
+async function finishHeartMeasurement(){
+
+    closeHeartMonitor();
+
+    toast("Heart measurement stopped");
+}
+
+
+/* =========================================================
+   CLOSE CAMERA
+========================================================= */
+
+async function closeHeartMonitor(){
+
+    heartMeasuring = false;
+
+    if(ppgTimer){
+
+        clearInterval(ppgTimer);
+
+        ppgTimer = null;
+    }
+
+    if(cameraTrack){
+
+        try{
+
+            await cameraTrack.applyConstraints({
+                advanced:[
+                    {torch:false}
+                ]
+            });
+
+        }catch(e){}
+    }
+
+    if(videoStream){
+
+        videoStream
+            .getTracks()
+            .forEach(track=>{
+                track.stop();
+            });
+
+        videoStream = null;
+    }
+
+    cameraTrack = null;
+
+    document.getElementById("cameraModal")
+        .classList.remove("show");
+
+    document.getElementById("heartButton")
+        .textContent =
+        "START HEART TEST";
+
+    document.getElementById("heartButton")
+        .classList.remove("stop");
+
+    document.getElementById("heartStatus")
+        .textContent =
+        "Camera measurement not running";
+
+    document.getElementById("heartDot")
+        .classList.remove("live");
+
+    document.getElementById("heartSignal")
+        .textContent =
+        "Sensor idle";
+
+}
+
+
+/* =========================================================
+   NAV
+========================================================= */
+
+function navSelect(button){
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(b=>{
+            b.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    toast(
+        button.innerText +
+        " selected"
+    );
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+window.addEventListener(
+    "load",
+    ()=>{
+
+        setTimeout(
+            enableMotion,
+            500
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
